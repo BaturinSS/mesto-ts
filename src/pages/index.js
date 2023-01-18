@@ -113,10 +113,12 @@ function submitEditAvatarForm({avatarUrl}) {
 
 function submitAddCardForm(data) {
   const createdSubmit = true;
-  return api.addCard(data.cardTitle, data.cardLink).then((res) => {
-    addCard(res, createdSubmit);
-    deleteLastCard();
-  });
+  return api
+    .addCard(data.cardTitle, data.cardLink)
+    .then((res) => {
+      addCard(res, createdSubmit);
+      deleteLastCard();
+    });
 }
 
 function submitEditProfileForm({name, job}) {
@@ -134,66 +136,67 @@ function addCard(cardInfo, createdSubmit) {
 }
 
 function createCard(cardInfo) {
-  const card = new Card(
-    cardInfo,
-    ID_SECTION_CARD_TEMPLATE,
-    () => {
-      popupWithImage.open(cardInfo.name, cardInfo.link);
-    },
-    (id) => {
-      popupDeleteCard.open();
-      popupDeleteCard.changeSubmitHandler(() => {
-        api
-          .deleteCard(id)
-          .then(() => {
-            card.deleteCard();
-            popupDeleteCard.close();
-            api
-              .getCards()
-              .then((cardList) => {
-                addCard(cardList[cardList.length - 1], false);
-              })
-              .catch((err) => {
-                err.then((res) => {
-                  alert(res.message);
+  const card = new Card({
+      cardInfo: cardInfo,
+      selectorTemplate: ID_SECTION_CARD_TEMPLATE,
+      handleImageClick: () => {
+        popupWithImage.open(cardInfo.name, cardInfo.link);
+      },
+      handleDeleteClick: (id) => {
+        popupDeleteCard.open();
+        popupDeleteCard.changeSubmitHandler(() => {
+          api
+            .deleteCard(id)
+            .then(() => {
+              card.deleteCard();
+              popupDeleteCard.close();
+              api
+                .getCards()
+                .then((cardList) => {
+                  addCard(cardList[cardList.length - 1], false);
+                })
+                .catch((err) => {
+                  err.then((res) => {
+                    alert(res.message);
+                  });
                 });
+            })
+            .catch((err) => {
+              err.then((res) => {
+                alert(res.message);
               });
-          })
-          .catch((err) => {
-            err.then((res) => {
-              alert(res.message);
+            })
+            .finally(() => {
+              popupDeleteCard.renderLoading(false);
             });
-          })
-          .finally(() => {
-            popupDeleteCard.renderLoading(false);
-          });
-      });
-    },
-    userId,
-    (id) => {
-      if (card.isLiked()) {
-        api
-          .deleteLike(id)
-          .then((res) => {
-            res.likes = undefined;
-            card.setLikes(res.likes);
-          })
-          .catch((err) => {
-            err.then((res) => {
-              alert(res.message);
+        });
+      },
+      userId: userId,
+      handleLikeClick: (id) => {
+        if (card.isLiked()) {
+          api
+            .deleteLike(id)
+            .then((res) => {
+              res.likes = undefined;
+              card.setLikes(res.likes);
+            })
+            .catch((err) => {
+              err.then((res) => {
+                alert(res.message);
+              });
             });
-          });
-      } else {
-        api
-          .addLike(id)
-          .then((res) => {
-            card.setLikes(res.likes);
-          })
-          .catch((err) => {
-            err.then((res) => {
-              alert(res.message);
+        } else {
+          api
+            .addLike(id)
+            .then((res) => {
+              card.setLikes(res.likes);
+            })
+            .catch((err) => {
+              err.then((res) => {
+                alert(res.message);
+              });
             });
-          });
+        }
       }
     }
   );
