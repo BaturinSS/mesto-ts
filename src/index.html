@@ -3,117 +3,123 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Mesto Russia</title>
-  <meta name="description" content="Портфолио Сергея Батурина на Яндекс Практикуме">
-  <meta name="keywords" content="html, css, javascript">
-  <meta name="author" content="Сергей Батурин">
+  <meta content="Портфолио Сергея Батурина на Яндекс Практикуме" name="description">
+  <meta content="html, css, javascript" name="keywords">
+  <meta content="Сергей Батурин" name="author">
 </head>
 
 <body class="body">
-  <div class="root">
-    <header class="header">
-      <img class="header__logo" src="<%=require('./images/header__logo.svg')%>" alt="логотип">
-    </header>
-    <main class="content">
-      <section class="profile">
-        <div class="profile__figure">
-          <div class="profile__ellipse"><img class="plofile__avatar" src="#" alt="аватар"></div>
-          <div class="profile__info">
-            <div class="profile__group">
-              <h1 class="profile__name"></h1>
-              <button type="button" class="profile__button-edit"></button>
-            </div>
-            <p class="profile__subtitle"></p>
+<div class="root">
+  <header class="header">
+    <img alt="логотип" class="header__logo" src="<%=require('./images/header__logo.svg')%>">
+  </header>
+  <main class="content">
+    <section class="profile">
+      <div class="profile__figure">
+        <div class="profile__ellipse"><img alt="аватар" class="profile__avatar" src="#"></div>
+        <div class="profile__info">
+          <div class="profile__group">
+            <h1 class="profile__name"></h1>
+            <button class="profile__button-edit" type="button"></button>
           </div>
+          <p class="profile__subtitle"></p>
         </div>
-        <button type="button" class="profile__button-add"></button>
-      </section>
-      <section class="elements">
-        <ul class="elements__cards"></ul>
-      </section>
-    </main>
-    <footer class="footer">
-      <p class="footer__copyright"></p>
-    </footer>
-    <div class="popup popup_type_profile-edit">
-      <div class="popup__container">
-        <button class="popup__close" type="button"><img class="popup__image-cross"
-            src="<%=require('./images/image-cross.svg')%>" alt="иконка"></button>
-        <h3 class="popup__title">Редактировать профиль</h3>
-        <form class="popup__form popup__form_type_profile-edit" name="editProfile" action="#" method="get" novalidate>
-          <input id="userName-input" class="popup__input popup__input_user-name" required placeholder="Имя"
-            spellcheck="true" type="text" name="name" minlength="2" maxlength="40">
-          <span class="userName-input-error popup__input-error"></span>
-          <input id="userProfession-input" class="popup__input popup__input_user-profession" required
-            placeholder="О себе" spellcheck="true" type="text" name="job" minlength="2" maxlength="200">
-          <span class="userProfession-input-error popup__input-error"></span>
-          <button class="popup__save-button" type="submit">Сохранить</button>
-        </form>
       </div>
-    </div>
-    <div class="popup popup_type_card-add">
-      <div class="popup__container">
-        <button class="popup__close" type="button"><img class="popup__image-cross"
-            src="<%=require('./images/image-cross.svg')%>" alt="иконка"></button>
-        <h3 class="popup__title">Новое место</h3>
-        <form class="popup__form popup__form_type_card-add" name="addCard" action="#" method="get" novalidate>
-          <input id='cardTitle-input' class="popup__input popup__input_card-title" required placeholder="Название"
-            spellcheck="true" type="text" name="cardTitle" minlength="2" maxlength="30">
-          <span class="cardTitle-input-error popup__input-error"></span>
-          <input id="cardLink-input" class="popup__input popup__input_card-link" required
-            placeholder="Ссылка на картинку" spellcheck="true" type="url" name="cardLink">
-          <span class="cardLink-input-error popup__input-error"></span>
-          <button class="popup__save-button" type="submit">Создать</button>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="popup popup_type_delete-confirm">
+      <button class="profile__button-add" type="button"></button>
+    </section>
+    <section class="elements">
+      <ul class="elements__cards"></ul>
+    </section>
+  </main>
+  <footer class="footer">
+    <p class="footer__copyright"></p>
+  </footer>
+  <div class="popup popup_type_profile-edit">
     <div class="popup__container">
-      <button class="popup__close" type="button"><img class="popup__image-cross"
-          src="<%=require('./images/image-cross.svg')%>" alt="иконка"></button>
-      <h3 class="popup__title popup__title_delete-confirm">Вы уверены?</h3>
-      <button class="popup__save-button popup__save-button_delete-confirm" type="submit">Да</button>
-    </div>
-  </div>
-  <div class="popup popup_type_avatar-edit">
-    <div class="popup__container">
-      <button class="popup__close" type="button"><img class="popup__image-cross"
-          src="<%=require('./images/image-cross.svg')%>" alt="иконка"></button>
-      <h3 class="popup__title">Обновить аватар</h3>
-      <form class="popup__form popup__form_type_avatar-edit" name="addAvatar" action="#" method="get" novalidate>
-        <input id="avatarUrl-input" class="popup__input popup__input_avatar-url" required
-          placeholder="Ссылка на картинку" spellcheck="true" type="url" name="avatarUrl">
-        <span class="avatarUrl-input-error popup__input-error"></span>
+      <button class="popup__close" type="button">
+        <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+      </button>
+      <h3 class="popup__title">Редактировать профиль</h3>
+      <form action="#" class="popup__form popup__form_type_profile-edit" method="get" name="editProfile" novalidate>
+        <input class="popup__input popup__input_user-name" id="userName-input" maxlength="40" minlength="2"
+               name="name" placeholder="Имя" required spellcheck="true" type="text">
+        <span class="userName-input-error popup__input-error"></span>
+        <input class="popup__input popup__input_user-profession" id="userProfession-input" maxlength="200"
+               minlength="2" name="job" placeholder="О себе" required spellcheck="true" type="text">
+        <span class="userProfession-input-error popup__input-error"></span>
         <button class="popup__save-button" type="submit">Сохранить</button>
       </form>
     </div>
   </div>
-  <div class="popup popup_type_image-zoom">
-    <div class="popup__box">
-      <button class="popup__close" type="button"><img class="popup__image-cross"
-          src="<%=require('./images/image-cross.svg')%>" alt="иконка"></button>
-      <img class="popup__image" src="#" alt="фотография">
-      <h2 class="popup__subtitle"></h2>
+  <div class="popup popup_type_card-add">
+    <div class="popup__container">
+      <button class="popup__close" type="button">
+        <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+      </button>
+      <h3 class="popup__title">Новое место</h3>
+      <form action="#" class="popup__form popup__form_type_card-add" method="get" name="addCard" novalidate>
+        <input class="popup__input popup__input_card-title" id='cardTitle-input' maxlength="30" minlength="2"
+               name="cardTitle" placeholder="Название" required spellcheck="true" type="text">
+        <span class="cardTitle-input-error popup__input-error"></span>
+        <input class="popup__input popup__input_card-link" id="cardLink-input" name="cardLink"
+               placeholder="Ссылка на картинку" required spellcheck="true" type="url">
+        <span class="cardLink-input-error popup__input-error"></span>
+        <button class="popup__save-button" type="submit">Создать</button>
+      </form>
     </div>
   </div>
-  <template id="elements-template">
-    <li class="elements__element">
-      <button type="button" class="elements__delete"><img class="elements__image-delete"
-          src="<%=require('./images/delete.svg')%>" alt="иконка"></button>
-      <figure class="elements__rectangle">
-        <img class="elements__mask-group" src="#" alt="фотография">
-        <figcaption>
-          <h2 class="elements__title"></h2>
-        </figcaption>
-      </figure>
-      <div class="elements__group-likes">
-        <button type="button" class="elements__group"></button>
-        <span class="elements__number-likes"></span>
-      </div>
-    </li>
-  </template>
+</div>
+<div class="popup popup_type_delete-confirm">
+  <div class="popup__container">
+    <button class="popup__close" type="button">
+      <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+    </button>
+    <h3 class="popup__title popup__title_delete-confirm">Вы уверены?</h3>
+    <button class="popup__save-button popup__save-button_delete-confirm" type="submit">Да</button>
+  </div>
+</div>
+<div class="popup popup_type_avatar-edit">
+  <div class="popup__container">
+    <button class="popup__close" type="button">
+      <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+    </button>
+    <h3 class="popup__title">Обновить аватар</h3>
+    <form action="#" class="popup__form popup__form_type_avatar-edit" method="get" name="addAvatar" novalidate>
+      <input class="popup__input popup__input_avatar-url" id="avatarUrl-input" name="avatarUrl"
+             placeholder="Ссылка на картинку" required spellcheck="true" type="url">
+      <span class="avatarUrl-input-error popup__input-error"></span>
+      <button class="popup__save-button" type="submit">Сохранить</button>
+    </form>
+  </div>
+</div>
+<div class="popup popup_type_image-zoom">
+  <div class="popup__box">
+    <button class="popup__close" type="button">
+      <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+    </button>
+    <img alt="фотография" class="popup__image" src="#">
+    <h2 class="popup__subtitle"></h2>
+  </div>
+</div>
+<template id="elements-template">
+  <li class="elements__element">
+    <button class="elements__delete" type="button">
+      <img alt="иконка" class="elements__image-delete" src="<%=require('./images/delete.svg')%>">
+    </button>
+    <figure class="elements__rectangle">
+      <img alt="фотография" class="elements__mask-group" src="#">
+      <figcaption>
+        <h2 class="elements__title"></h2>
+      </figcaption>
+    </figure>
+    <div class="elements__group-likes">
+      <button class="elements__group" type="button"></button>
+      <span class="elements__number-likes"></span>
+    </div>
+  </li>
+</template>
 </body>
 
 </html>
