@@ -1,5 +1,5 @@
 import "../pages/index.css";
-import Card from "../scripts/components/Card";
+import Card, {ICardInfo, IDataUser} from "../scripts/components/Card";
 import FormValidator from "../scripts/components/FormValidator";
 import Section from "../scripts/components/Section";
 import PopupWithImage from "../scripts/components/PopupWithImage";
@@ -17,7 +17,7 @@ import {
   CLASS_ELEMENT_FORM_EDIT_PROFILE,
   ID_SECTION_CARD_TEMPLATE
 } from "../scripts/utils/constants";
-import {ArgsHandleSubmit} from "../scripts/components/Popup";
+import {IConstructorPopupFull} from "../scripts/components/Popup";
 
 export const api = new Api({
   baseUrl: new URL('https://mesto.nomoreparties.co/v1/cohort-39'),
@@ -27,13 +27,13 @@ export const api = new Api({
   }
 });
 
-const profileOpenPopupButtonEdit =
+const profileOpenPopupButtonEdit: HTMLButtonElement | null =
   document.querySelector(`.${CLASS_ELEMENT_BUTTON_OPEN_POPUP_EDIT_PROFILE}`);
 
-const avatarOpenPopupButtonEdit =
+const avatarOpenPopupButtonEdit: HTMLButtonElement | null =
   document.querySelector(`.${CLASS_ELEMENT_BUTTON_OPEN_POPUP_EDIT_AVATAR}`);
 
-const profileOpenPopupButtonAdd =
+const profileOpenPopupButtonAdd: HTMLButtonElement | null =
   document.querySelector(`.${CLASS_ELEMENT_BUTTON_OPEN_POPUP_ADD_CARD}`);
 
 const formAddCardValidator = new FormValidator({
@@ -60,19 +60,19 @@ const popupWithImage = new PopupWithImage({
   popupClass: "popup_type_image-zoom"
 });
 
-const popupAddImage = new PopupWithForm({
+const popupAddImage = new PopupWithForm(<IConstructorPopupFull>{
   popupClass: "popup_type_card-add",
   handleSubmit: submitAddCardForm,
   titleButton: "Добавляем карточку..."
 });
 
-const popupEditProfile = new PopupWithForm({
+const popupEditProfile = new PopupWithForm(<IConstructorPopupFull>{
   popupClass: "popup_type_profile-edit",
   handleSubmit: submitEditProfileForm,
   titleButton: "Сохраняем..."
 });
 
-const popupEditAvatar = new PopupWithForm({
+const popupEditAvatar = new PopupWithForm(<IConstructorPopupFull>{
   popupClass: "popup_type_avatar-edit",
   handleSubmit: submitEditAvatarForm,
   titleButton: "Меняем аватар..."
@@ -84,18 +84,19 @@ const popupDeleteCard = new PopupWithConfirm({
 });
 
 const userInfo = new UserInfo({
-  profileNameSelector: ".profile__name",
-  profileJobSelector: ".profile__subtitle",
-  avatarSelector: ".profile__avatar",
+  classProfileName: "profile__name",
+  classProfileAbout: "profile__subtitle",
+  classProfileAvatar: "profile__avatar",
 });
 
-const autoDate = () => {
-  document.querySelector(
-    ".footer__copyright"
-  ).textContent = `© ${new Date().getFullYear()}. Батурин Сергей`;
-};
+function autoDate(): void {
+  const elementCopyright: HTMLSpanElement | null = document.querySelector(".footer__copyright");
+  if (elementCopyright) {
+    elementCopyright.textContent = `© 2022 - ${new Date().getFullYear()}. Батурин Сергей`;
+  } else throw new Error('No element "footer__copyright"')
+}
 
-let userId;
+let userId: string;
 
 function openEditProfilePopup() {
   popupEditProfile.setInputValues(userInfo.getUserInfo());
@@ -113,50 +114,63 @@ function openEditAvatarPopup() {
   popupEditAvatar.open();
 }
 
-function submitEditAvatarForm({avatarUrl}) {
+function submitEditAvatarForm(dataUser: IDataUser): Promise<void> {
   return api
-    .editAvatar(avatarUrl)
-    .then((res) => {
-      userInfo
-        .setUserInfo(res.name, res.about, res.avatar);
+    .editAvatar(dataUser)
+    .then((dataUserNew) => {
+      userInfo.setUserInfo(dataUserNew);
     });
 }
 
-function submitAddCardForm({cardTitle, cardLink}: ArgsHandleSubmit) {
-  console.log(cardLink)
-  const createdSubmit = true;
+function submitAddCardForm(cardInfo: ICardInfo): Promise<void> {
   return api
-    .addCard(cardTitle, new URL(cardLink))
+    .addCard(cardInfo)
     .then((res) => {
-      addCard(res, createdSubmit);
+      addCard({
+        cardInfo: res,
+        isCreatedSubmit: true
+      });
       deleteLastCard();
     });
 }
 
-function submitEditProfileForm({name, job}: ArgsHandleSubmit) {
+function submitEditProfileForm(dataUser: IDataUser) {
   return api
-    .editUserInfo(name, job)
-    .then((res) => {
-      userInfo.setUserInfo(res.name, res.about, res.avatar);
+    .editUserInfo(dataUser)
+    .then((dataUserNew: IDataUser) => {
+      userInfo.setUserInfo(dataUserNew);
     });
 }
 
 function deleteLastCard() {
-  document.querySelector(".elements__cards").lastElementChild.remove();
+  const elementList: HTMLUListElement | null =
+    document.querySelector(".elements__cards");
+  if (elementList) {
+    const lastElement: Element | null = elementList.lastElementChild;
+    if (lastElement) lastElement.remove();
+  } else throw new Error('No element last in elementList "elements__cards"')
 }
 
-function addCard(cardInfo, createdSubmit) {
-  section.setItem(createCard(cardInfo), createdSubmit);
+export interface IAddCard {
+  cardInfo: ICardInfo,
+  isCreatedSubmit: boolean
 }
 
-function createCard(cardInfo) {
+function addCard({cardInfo, isCreatedSubmit}: IAddCard) {
+  section.setItem({
+    element: createCard(cardInfo),
+    isCreatedSubmit: isCreatedSubmit
+  });
+}
+
+function createCard(cardInfo: ICardInfo): HTMLTemplateElement {
   const card = new Card({
       cardInfo: cardInfo,
-      selectorTemplate: ID_SECTION_CARD_TEMPLATE,
-      handleImageClick: () => {
-        popupWithImage.open(cardInfo.name, cardInfo.link);
+      idTemplate: ID_SECTION_CARD_TEMPLATE,
+      handleImageClick: (): void => {
+        popupWithImage.open(cardInfo);
       },
-      handleDeleteClick: (id) => {
+      handleDeleteClick: (id: string) => {
         popupDeleteCard.open();
         popupDeleteCard.changeSubmitHandler(() => {
           api
@@ -166,25 +180,17 @@ function createCard(cardInfo) {
               popupDeleteCard.close();
               api
                 .getCards()
-                .then((cardList) => {
-                  addCard(cardList[cardList.length - 1], false);
-                })
-                .catch((err) => {
-                  err.then((res) => {
-                    alert(res.message);
+                .then((cardList: ICardInfo[]) => {
+                  addCard({
+                    cardInfo: cardList[cardList.length - 1],
+                    isCreatedSubmit: false
                   });
-                });
+                })
+                .catch(outputError)
             })
-            .catch((err) => {
-              err.then((res) => {
-                alert(res.message);
-              });
-            })
+            .catch(outputError)
             .finally(() => {
-              popupDeleteCard
-                .renderLoading({
-                  isLoading: false
-                });
+              popupDeleteCard.renderLoading({isLoading: false});
             });
         });
       },
@@ -193,27 +199,17 @@ function createCard(cardInfo) {
         if (card.isLiked()) {
           api
             .deleteLike(id)
-            .then((res) => {
-              res.likes = undefined;
+            .then((res: ICardInfo) => {
               card.setLikes(res.likes);
             })
-            .catch((err) => {
-              console.log(err)
-              err.then((res) => {
-                alert(res.message);
-              });
-            });
+            .catch(outputError)
         } else {
           api
             .addLike(id)
-            .then((res) => {
-              card.setLikes(res.likes);
+            .then(({likes}) => {
+              card.setLikes(likes);
             })
-            .catch((err) => {
-              err.then((res) => {
-                alert(res.message);
-              });
-            });
+            .catch(outputError)
         }
       }
     }
@@ -221,30 +217,40 @@ function createCard(cardInfo) {
   return card.generateCard();
 }
 
-Promise.all([api.getUserInfo(), api.getCards()])
-  .then(([userData, cards]) => {
-    userInfo.setUserInfo(userData.name, userData.about, userData.avatar);
-    userId = userData._id;
+Promise.all([api.getCurrentUserInfo(), api.getCards()])
+  .then(([dataUser, cards]) => {
+    userInfo.setUserInfo(dataUser);
+    userId = dataUser._id;
     section.rendererItems(cards);
   })
-  .catch((err) => {
-    err.then((res) => {
-      alert(res.message);
-    });
-  });
+  .catch(outputError)
 
-profileOpenPopupButtonEdit.addEventListener(
-  "click",
-  openEditProfilePopup
-);
-profileOpenPopupButtonAdd.addEventListener(
-  "click",
-  openAddImagePopup
-);
-avatarOpenPopupButtonEdit.addEventListener(
-  "click",
-  openEditAvatarPopup
-);
+function outputError(err: unknown): void {
+  if (err instanceof Error) {
+    console.log(err.message);
+  } else console.log(err)
+}
+
+if (profileOpenPopupButtonEdit) {
+  profileOpenPopupButtonEdit.addEventListener(
+    "click",
+    openEditProfilePopup
+  );
+} else throw new Error('No element about edit button')
+
+if (profileOpenPopupButtonAdd) {
+  profileOpenPopupButtonAdd.addEventListener(
+    "click",
+    openAddImagePopup
+  );
+} else throw new Error('No element card add button')
+
+if (avatarOpenPopupButtonEdit) {
+  avatarOpenPopupButtonEdit.addEventListener(
+    "click",
+    openEditAvatarPopup
+  );
+} else throw new Error('No element avatar edit button')
 
 formAddCardValidator.enableValidation();
 formEditProfileValidator.enableValidation();

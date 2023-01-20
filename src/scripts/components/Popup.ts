@@ -1,19 +1,25 @@
-import {IDataOpen} from "./PopupWithImage";
+import {ICardInfo, IDataUser} from "./Card";
+
+export type ArgsHandleSubmit = { [key: string]: string }
+
+interface IHandleSubmit {
+  (args: ICardInfo): Promise<void>
+
+  (args: IDataUser): Promise<void>
+}
 
 export interface IConstructorPopup {
   popupClass: string,
 }
 
-export type ArgsHandleSubmit = { [key: string]: string }
-
 interface IConstructorPopupImplementations extends IConstructorPopup {
   titleButton?: string,
-  handleSubmit?: (args?: ArgsHandleSubmit) => Promise<string>
+  handleSubmit?: IHandleSubmit
 }
 
 export interface IConstructorPopupFull extends IConstructorPopup {
   titleButton: string,
-  handleSubmit: (args?: ArgsHandleSubmit) => Promise<string>
+  handleSubmit: IHandleSubmit
 }
 
 export interface IConstructorPopupTwoValues extends IConstructorPopup {
@@ -58,7 +64,7 @@ abstract class Popup {
     }
   }
 
-  public open(data?: IDataOpen): void {
+  public open(data?: ICardInfo): void {
     if (this._popup) {
       this._popup.classList.add('popup_opened');
 
@@ -67,7 +73,7 @@ abstract class Popup {
     document.addEventListener('keydown', this._handleEscClose);
   }
 
-  public close(): void {
+  public close(this: Popup): void {
     if (this._popup) {
       this._popup.classList.remove('popup_opened');
 

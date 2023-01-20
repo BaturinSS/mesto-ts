@@ -1,8 +1,10 @@
-import type {ArgsHandleSubmit, IConstructorPopupFull} from './Popup';
+import type {IConstructorPopupFull} from './Popup';
 import Popup from './Popup';
+import {IDataUser} from "./Card";
 
 
 class PopupWithForm extends Popup {
+  protected _values: any = {};
   private readonly _formActivePopup: HTMLFormElement | null;
   private _form!: HTMLFormElement;
   private _inputs: HTMLInputElement[];
@@ -26,31 +28,28 @@ class PopupWithForm extends Popup {
       event.preventDefault();
       this._handleSubmit(this._getInputValues())
         .then(() => this.close())
-        .catch((err) => {
+        .catch((err: unknown) => {
           if (err instanceof Error) {
             alert(err.message);
-          }
-          err.then((res) => {
-            alert(res.message);
-          });
+          } else alert(err)
         })
         .finally(() => this.renderLoading({isLoading: false}))
     });
   }
 
-  public setInputValues(data) {
-    this._inputs.forEach(input => {
+  public setInputValues(data: { [key: string]: string }) {
+    this._inputs.forEach((input) => {
       input.value = data[input.name];
     });
   }
 
-  private _getInputValues(this: PopupWithForm) {
-    const values: ArgsHandleSubmit = {};
+  private _getInputValues(): IDataUser {
     this._inputs.forEach((input) => {
-      values[input.name] = input.value;
-    });
-    return values;
+      this._values[`${input.name}`] = input.value;
+    })
+    return this._values;
   }
+
 }
 
 export default PopupWithForm;

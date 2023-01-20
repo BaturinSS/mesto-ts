@@ -10,7 +10,7 @@ class PopupWithConfirm extends Popup {
     this._buttonSubmit.removeAttribute('disabled');
   }
 
-  public changeSubmitHandler(newSubmitHandler: () => void) {
+  public changeSubmitHandler(newSubmitHandler: any) {
     this._handleSubmit = newSubmitHandler;
   }
 

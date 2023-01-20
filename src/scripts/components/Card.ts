@@ -6,14 +6,13 @@ export interface IDataUser {
   _id: string
 }
 
-
 interface ILikes extends IDataUser {
 }
 
 interface IOwner extends IDataUser {
 }
 
-interface ICardInfo {
+export interface ICardInfo {
   createdAt: Date,
   likes: ILikes[],
   link: URL,
@@ -22,11 +21,11 @@ interface ICardInfo {
   _id: string
 }
 
-type TFuncHandleClick = (id: string) => void
+export type TFuncHandleClick = (id: string) => void
 
-interface ICardConstructor {
+export interface ICardConstructor {
   cardInfo: ICardInfo,
-  selectorTemplate: string,
+  idTemplate: string,
   handleImageClick: () => void,
   handleDeleteClick: TFuncHandleClick,
   userId: string,
@@ -40,7 +39,7 @@ class Card {
   private readonly _id: string;
   private readonly _userId: string;
   private readonly _ownerId: string;
-  private readonly _selectorTemplate: string;
+  private readonly _idTemplate: string;
   private readonly _handleImageClick: () => void;
   private readonly _handleDeleteClick: TFuncHandleClick;
   private readonly _handleLikeClick: TFuncHandleClick;
@@ -53,7 +52,7 @@ class Card {
   private _elementCardTemplate: HTMLTemplateElement | null = null;
   private _elementCardElement: HTMLLIElement | null = null;
 
-  constructor({cardInfo, selectorTemplate, handleImageClick, handleDeleteClick, userId, handleLikeClick}
+  constructor({cardInfo, idTemplate, handleImageClick, handleDeleteClick, userId, handleLikeClick}
                 : ICardConstructor) {
     this._name = cardInfo.name;
     this._link = cardInfo.link;
@@ -61,13 +60,13 @@ class Card {
     this._id = cardInfo._id;
     this._userId = userId;
     this._ownerId = cardInfo.owner._id;
-    this._selectorTemplate = selectorTemplate;
+    this._idTemplate = idTemplate;
     this._handleImageClick = handleImageClick;
     this._handleDeleteClick = handleDeleteClick;
     this._handleLikeClick = handleLikeClick;
   };
 
-  public generateCard = () => {
+  public generateCard = (): HTMLTemplateElement => {
     this._element = this._getTemplate();
 
     if (this._element) {
@@ -119,7 +118,7 @@ class Card {
 
   private _getTemplate = (): HTMLTemplateElement => {
     this._elementCardTemplate =
-      document.querySelector(`#${this._selectorTemplate}`);
+      document.querySelector(`#${this._idTemplate}`);
 
     if (this._elementCardTemplate) {
       const elementCardTemplateContent = this._elementCardTemplate.content;

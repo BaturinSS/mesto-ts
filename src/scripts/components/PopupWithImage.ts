@@ -1,10 +1,6 @@
 import type {IConstructorPopup} from './Popup';
 import Popup from './Popup';
-
-export interface IDataOpen {
-  nameImage: string,
-  linkImage: string
-}
+import {ICardInfo} from "./Card";
 
 class PopupWithImage extends Popup {
   private readonly _popupZoomSubtitleActivePopup: HTMLHeadingElement | null;
@@ -20,13 +16,13 @@ class PopupWithImage extends Popup {
     if (this._popupZoomImageActivePopup) this._popupZoomImage = this._popupZoomImageActivePopup;
   }
 
-  override open({nameImage, linkImage}: IDataOpen): void {
+  override open(cardInfo: ICardInfo): void {
     this._popupZoomImage.src = '';
     this._popupZoomImage.alt = '';
     this._popupZoomSubtitle.textContent = '';
-    this._popupZoomImage.src = linkImage;
-    this._popupZoomImage.alt = nameImage;
-    this._popupZoomSubtitle.textContent = nameImage;
+    this._popupZoomImage.src = cardInfo.link.toString();
+    this._popupZoomImage.alt = cardInfo.name;
+    this._popupZoomSubtitle.textContent = cardInfo.name;
     super.open();
   }
 }

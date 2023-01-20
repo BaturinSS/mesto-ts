@@ -1,3 +1,5 @@
+import {ICardInfo, IDataUser} from "./Card";
+
 interface IBasicConfApi {
   baseUrl: URL,
   headers: HeadersInit
@@ -5,7 +7,7 @@ interface IBasicConfApi {
 
 interface IConfApiFetch {
   method: methods,
-  headers: HeadersInit,
+  headers: IBasicConfApi['headers'],
 }
 
 interface IConfApiFetchBody extends IConfApiFetch {
@@ -20,18 +22,21 @@ const enum methods {
   PUT = 'PUT',
 }
 
+export interface IDefaultMessage {
+  message: string
+}
+
 type FuncFetchId = {
-  (id: number): Promise<string>
-  (id: string): Promise<string>
+  (id: number): Promise<Response>
+  (id: string): Promise<Response>
 }
 
 type FuncFetchAvatar = {
-  (id: string): Promise<string>
+  (id: string): Promise<Response>
 }
 
-type FuncFetchNameLink = (name: string, link: URL) => Promise<string>
-type FuncFetchNameAbout = (name: string, about: string) => Promise<string>
-type FuncNoArgs = () => Promise<string>
+type FuncFetchNameLink = (name: string, link: URL) => Promise<Response>
+type FuncFetchNameAbout = ({name, about}: { name: string, about: string }) => Promise<IDataUser>
 
 class Api {
   private readonly _baseUrl: IBasicConfApi['baseUrl'];
@@ -42,7 +47,7 @@ class Api {
     this._headers = headers;
   }
 
-  public getUserInfo: FuncNoArgs = () => {
+  public getCurrentUserInfo(): Promise<IDataUser> {
     const input: URL = new URL(`${this._baseUrl}/users/me`);
 
     const init: IConfApiFetch = {
@@ -51,10 +56,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public getCards: FuncNoArgs = () => {
+  public getCards = (): Promise<ICardInfo[]> => {
     const input: URL = new URL(`${this._baseUrl}/cards`);
 
     const init: IConfApiFetch = {
@@ -63,10 +68,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public editUserInfo: FuncFetchNameAbout = (name, about) => {
+  public editUserInfo = ({name, about}: IDataUser): Promise<IDataUser> => {
     const input: URL = new URL(`${this._baseUrl}/users/me`);
 
     const init: IConfApiFetchBody = {
@@ -76,10 +81,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public addCard: FuncFetchNameLink = (name, link) => {
+  public addCard = ({name, link}: ICardInfo): Promise<ICardInfo> => {
     const input: URL = new URL(`${this._baseUrl}/cards`);
 
     const init: IConfApiFetchBody = {
@@ -89,10 +94,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public deleteCard: FuncFetchId = (id) => {
+  public deleteCard = (id: string | number): Promise<void> => {
     const input: URL = new URL(`${this._baseUrl}/cards/${id}`);
 
     const init: IConfApiFetch = {
@@ -101,10 +106,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public addLike: FuncFetchId = (id) => {
+  public addLike = (id: number | string): Promise<ICardInfo> => {
     const input: URL = new URL(`${this._baseUrl}/cards/${id}/likes`);
 
     const init: IConfApiFetch = {
@@ -113,10 +118,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public deleteLike: FuncFetchId = (id) => {
+  public deleteLike = (id: number | string): Promise<ICardInfo> => {
     const input: URL = new URL(`${this._baseUrl}/cards/${id}/likes`);
 
     const init: IConfApiFetch = {
@@ -125,10 +130,10 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  public editAvatar: FuncFetchAvatar = (avatar) => {
+  public editAvatar = ({avatar}: IDataUser): Promise<IDataUser> => {
     const input: URL = new URL(`${this._baseUrl}/users/me/avatar`);
 
     const init: IConfApiFetchBody = {
@@ -138,11 +143,13 @@ class Api {
     }
 
     return fetch(input, init)
-      .then((res) => this._checkResponse(res));
+      .then((res: Response) => this._checkResponse(res));
   }
 
-  private _checkResponse = (res: Response): Promise<string> => {
-    return !res.ok ? Promise.reject(res.json()) : res.json();
+  private _checkResponse<T>(res: Response): Promise<T> {
+    return res.ok
+      ? res.json()
+      : res.json().then((res: { message: string }) => Promise.reject(res.message))
   }
 }
 

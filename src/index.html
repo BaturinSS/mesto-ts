@@ -34,7 +34,7 @@
     </section>
   </main>
   <footer class="footer">
-    <p class="footer__copyright"></p>
+    <span class="footer__copyright"></span>
   </footer>
   <div class="popup popup_type_profile-edit">
     <div class="popup__container">
@@ -47,7 +47,7 @@
                name="name" placeholder="Имя" required spellcheck="true" type="text">
         <span class="userName-input-error popup__input-error"></span>
         <input class="popup__input popup__input_user-profession" id="userProfession-input" maxlength="200"
-               minlength="2" name="job" placeholder="О себе" required spellcheck="true" type="text">
+               minlength="2" name="about" placeholder="О себе" required spellcheck="true" type="text">
         <span class="userProfession-input-error popup__input-error"></span>
         <button class="popup__save-button" type="submit">Сохранить</button>
       </form>
@@ -61,9 +61,9 @@
       <h3 class="popup__title">Новое место</h3>
       <form action="#" class="popup__form popup__form_type_card-add" method="get" name="addCard" novalidate>
         <input class="popup__input popup__input_card-title" id='cardTitle-input' maxlength="30" minlength="2"
-               name="cardTitle" placeholder="Название" required spellcheck="true" type="text">
+               name="name" placeholder="Название" required spellcheck="true" type="text">
         <span class="cardTitle-input-error popup__input-error"></span>
-        <input class="popup__input popup__input_card-link" id="cardLink-input" name="cardLink"
+        <input class="popup__input popup__input_card-link" id="cardLink-input" name="link"
                placeholder="Ссылка на картинку" required spellcheck="true" type="url">
         <span class="cardLink-input-error popup__input-error"></span>
         <button class="popup__save-button" type="submit">Создать</button>
@@ -87,7 +87,7 @@
     </button>
     <h3 class="popup__title">Обновить аватар</h3>
     <form action="#" class="popup__form popup__form_type_avatar-edit" method="get" name="addAvatar" novalidate>
-      <input class="popup__input popup__input_avatar-url" id="avatarUrl-input" name="avatarUrl"
+      <input class="popup__input popup__input_avatar-url" id="avatarUrl-input" name="avatar"
              placeholder="Ссылка на картинку" required spellcheck="true" type="url">
       <span class="avatarUrl-input-error popup__input-error"></span>
       <button class="popup__save-button" type="submit">Сохранить</button>
