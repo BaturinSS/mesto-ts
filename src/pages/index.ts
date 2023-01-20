@@ -1,11 +1,11 @@
 import "../pages/index.css";
-import {Card} from "../scripts/components/Card";
-import {FormValidator} from "../scripts/components/FormValidator";
-import {Section} from "../scripts/components/Section";
-import {PopupWithImage} from "../scripts/components/PopupWithImage";
-import {PopupWithForm} from "../scripts/components/PopupWithForm";
-import {PopupWithConfirm} from "../scripts/components/PopupWithConfirm";
-import {UserInfo} from "../scripts/components/UserInfo";
+import Card from "../scripts/components/Card";
+import FormValidator from "../scripts/components/FormValidator";
+import Section from "../scripts/components/Section";
+import PopupWithImage from "../scripts/components/PopupWithImage";
+import PopupWithForm from "../scripts/components/PopupWithForm";
+import PopupWithConfirm from "../scripts/components/PopupWithConfirm";
+import UserInfo from "../scripts/components/UserInfo";
 import configValidation from "../scripts/utils/configValidation";
 import Api from "../scripts/components/Api";
 import {
@@ -17,6 +17,7 @@ import {
   CLASS_ELEMENT_FORM_EDIT_PROFILE,
   ID_SECTION_CARD_TEMPLATE
 } from "../scripts/utils/constants";
+import {ArgsHandleSubmit} from "../scripts/components/Popup";
 
 export const api = new Api({
   baseUrl: new URL('https://mesto.nomoreparties.co/v1/cohort-39'),
@@ -50,30 +51,37 @@ const formEditAvatarValidator = new FormValidator({
   classPopup: CLASS_ELEMENT_FORM_EDIT_AVATAR
 });
 
-const section = new Section(addCard, ".elements__cards");
+const section = new Section({
+  funcRenderer: addCard,
+  containerClass: "elements__cards"
+});
 
-const popupWithImage = new PopupWithImage(".popup_type_image-zoom");
+const popupWithImage = new PopupWithImage({
+  popupClass: "popup_type_image-zoom"
+});
 
-const popupAddImage = new PopupWithForm(
-  ".popup_type_card-add",
-  submitAddCardForm,
-  "Добавляем карточку..."
-);
-const popupEditProfile = new PopupWithForm(
-  ".popup_type_profile-edit",
-  submitEditProfileForm,
-  "Сохраняем..."
-);
-const popupEditAvatar = new PopupWithForm(
-  ".popup_type_avatar-edit",
-  submitEditAvatarForm,
-  "Меняем аватар..."
-);
+const popupAddImage = new PopupWithForm({
+  popupClass: "popup_type_card-add",
+  handleSubmit: submitAddCardForm,
+  titleButton: "Добавляем карточку..."
+});
 
-const popupDeleteCard = new PopupWithConfirm(
-  ".popup_type_delete-confirm",
-  "Удаляем карточку..."
-);
+const popupEditProfile = new PopupWithForm({
+  popupClass: "popup_type_profile-edit",
+  handleSubmit: submitEditProfileForm,
+  titleButton: "Сохраняем..."
+});
+
+const popupEditAvatar = new PopupWithForm({
+  popupClass: "popup_type_avatar-edit",
+  handleSubmit: submitEditAvatarForm,
+  titleButton: "Меняем аватар..."
+});
+
+const popupDeleteCard = new PopupWithConfirm({
+  popupClass: "popup_type_delete-confirm",
+  titleButton: "Удаляем карточку..."
+});
 
 const userInfo = new UserInfo({
   profileNameSelector: ".profile__name",
@@ -106,25 +114,31 @@ function openEditAvatarPopup() {
 }
 
 function submitEditAvatarForm({avatarUrl}) {
-  return api.editAvatar(avatarUrl).then((res) => {
-    userInfo.setUserInfo(res.name, res.about, res.avatar);
-  });
+  return api
+    .editAvatar(avatarUrl)
+    .then((res) => {
+      userInfo
+        .setUserInfo(res.name, res.about, res.avatar);
+    });
 }
 
-function submitAddCardForm(data) {
+function submitAddCardForm({cardTitle, cardLink}: ArgsHandleSubmit) {
+  console.log(cardLink)
   const createdSubmit = true;
   return api
-    .addCard(data.cardTitle, data.cardLink)
+    .addCard(cardTitle, new URL(cardLink))
     .then((res) => {
       addCard(res, createdSubmit);
       deleteLastCard();
     });
 }
 
-function submitEditProfileForm({name, job}) {
-  return api.editUserInfo(name, job).then((res) => {
-    userInfo.setUserInfo(res.name, res.about, res.avatar);
-  });
+function submitEditProfileForm({name, job}: ArgsHandleSubmit) {
+  return api
+    .editUserInfo(name, job)
+    .then((res) => {
+      userInfo.setUserInfo(res.name, res.about, res.avatar);
+    });
 }
 
 function deleteLastCard() {
@@ -167,7 +181,10 @@ function createCard(cardInfo) {
               });
             })
             .finally(() => {
-              popupDeleteCard.renderLoading(false);
+              popupDeleteCard
+                .renderLoading({
+                  isLoading: false
+                });
             });
         });
       },
@@ -181,6 +198,7 @@ function createCard(cardInfo) {
               card.setLikes(res.likes);
             })
             .catch((err) => {
+              console.log(err)
               err.then((res) => {
                 alert(res.message);
               });

@@ -13,11 +13,11 @@ interface IConfApiFetchBody extends IConfApiFetch {
 }
 
 const enum methods {
-  'GET' = 'GET',
-  "POST" = "POST",
-  'PATCH' = 'PATCH',
-  'DELETE' = 'DELETE',
-  'PUT' = 'PUT',
+  GET = 'GET',
+  POST = "POST",
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
+  PUT = 'PUT',
 }
 
 type FuncFetchId = {

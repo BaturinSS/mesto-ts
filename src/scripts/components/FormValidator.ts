@@ -10,13 +10,14 @@ interface IConstructor {
   classPopup: string,
 }
 
-export class FormValidator {
+class FormValidator {
   private readonly _formActivePopup: HTMLFormElement | null;
   private readonly _submitButton: HTMLButtonElement | null;
   private readonly _inactiveButtonClass: string;
   private readonly _inputErrorClass: string;
   private readonly _textErrorClass: string;
   private readonly _arrayInputsFormActive: HTMLInputElement[] = [];
+  private _inputError: HTMLInputElement | null = null;
 
   constructor({formData, classPopup}: IConstructor) {
     this._inactiveButtonClass = formData.inactiveButtonClass;
@@ -75,8 +76,7 @@ export class FormValidator {
   }
 
   private _changingButtonState(): void {
-    const validityFormActive = this._hasInvalidInput();
-    if (!validityFormActive) {
+    if (!this._hasInvalidInput()) {
       this._activationButton();
     } else {
       this._deactivateButton();
@@ -84,11 +84,10 @@ export class FormValidator {
   }
 
   private _disableErrorText(inputElement: HTMLInputElement): void {
-    let inputError: HTMLInputElement | null;
     if (this._formActivePopup) {
-      inputError = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
-      if (inputError) {
-        inputError.classList.remove(this._textErrorClass);
+      this._inputError = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
+      if (this._inputError) {
+        this._inputError.classList.remove(this._textErrorClass);
       } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_INPUT_ERROR)
     } else {
       throw new Error(MESSAGE_ERROR_NOT_ELEMENT_FORM_POPUP)
@@ -97,13 +96,12 @@ export class FormValidator {
   }
 
   private _includeErrorText(inputElement: HTMLInputElement): void {
-    let inputError: HTMLInputElement | null;
     if (this._formActivePopup) {
-      inputError = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
-      if (inputError) {
-        inputError.textContent = '';
-        inputError.classList.add(this._textErrorClass);
-        inputError.textContent = inputElement.validationMessage;
+      this._inputError = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
+      if (this._inputError) {
+        this._inputError.textContent = '';
+        this._inputError.classList.add(this._textErrorClass);
+        this._inputError.textContent = inputElement.validationMessage;
       } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_INPUT_ERROR)
     } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_FORM_POPUP)
   }
@@ -133,3 +131,5 @@ export class FormValidator {
     });
   }
 }
+
+export default FormValidator;
