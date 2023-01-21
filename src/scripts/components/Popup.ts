@@ -1,11 +1,12 @@
 import {ICardInfo, IDataUser} from "./Card";
-
-export type ArgsHandleSubmit = { [key: string]: string }
+import {interceptionError, TInterceptionError} from "../utils/utils";
 
 interface IHandleSubmit {
   (args: ICardInfo): Promise<void>
 
   (args: IDataUser): Promise<void>
+
+  (): void
 }
 
 export interface IConstructorPopup {
@@ -27,6 +28,7 @@ export interface IConstructorPopupTwoValues extends IConstructorPopup {
 }
 
 abstract class Popup {
+  protected readonly _interceptionError: TInterceptionError;
   protected readonly _buttonSubmit!: HTMLButtonElement;
   protected _handleSubmit!: IConstructorPopupFull['handleSubmit'];
   protected readonly _titleButton!: string;
@@ -42,12 +44,15 @@ abstract class Popup {
   protected constructor({popupClass, titleButton}: IConstructorPopupTwoValues)
   protected constructor({popupClass, titleButton, handleSubmit}: IConstructorPopupFull)
   protected constructor({popupClass, titleButton, handleSubmit}: IConstructorPopupImplementations) {
+    this._interceptionError = interceptionError;
     this._popupClass = popupClass;
     this._popupActive = document.querySelector(`.${this._popupClass}`);
 
     if (this._popupActive) {
       this._popup = this._popupActive;
-    } else throw new Error(`No section popup ${this._popupClass}`);
+    } else {
+      this._interceptionError(52, 'constructor', 'Popup.ts')
+    }
 
     if (typeof titleButton === "string") {
       this._titleButton = titleButton;
@@ -56,7 +61,9 @@ abstract class Popup {
         this._buttonSubmit = this._buttonSubmitActivePopup;
         this._textButton = this._buttonSubmit.textContent
         this._textDefault = this._textButton ? this._textButton : '';
-      } else throw new Error('No element submit button')
+      } else {
+        this._interceptionError(61, 'constructor', 'Popup.ts')
+      }
     }
 
     if (typeof handleSubmit === "function") {
@@ -68,7 +75,9 @@ abstract class Popup {
     if (this._popup) {
       this._popup.classList.add('popup_opened');
 
-    } else throw new Error(`No section popup ${this._popupClass}`);
+    } else {
+      this._interceptionError(75, 'open', 'Popup.ts')
+    }
 
     document.addEventListener('keydown', this._handleEscClose);
   }
@@ -77,7 +86,10 @@ abstract class Popup {
     if (this._popup) {
       this._popup.classList.remove('popup_opened');
 
-    } else throw new Error(`No section popup ${this._popupClass}`);
+    } else {
+      this._interceptionError(86, 'close', 'Popup.ts')
+    }
+
 
     document.removeEventListener('keydown', this._handleEscClose);
   }
@@ -92,7 +104,10 @@ abstract class Popup {
           this.close();
         }
       });
-    } else throw new Error(`No section popup ${this._popupClass}`);
+    } else {
+      this._interceptionError(104, 'setEventListeners', 'Popup.ts')
+    }
+
   }
 
   public renderLoading({isLoading}: { isLoading: boolean }): void {

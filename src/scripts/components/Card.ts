@@ -1,3 +1,6 @@
+import {type IConfigTemplateCard} from "../utils/configTemplateCard";
+import {interceptionError, type TInterceptionError} from "../utils/utils";
+
 export interface IDataUser {
   about: string,
   avatar: URL,
@@ -25,7 +28,7 @@ export type TFuncHandleClick = (id: string) => void
 
 export interface ICardConstructor {
   cardInfo: ICardInfo,
-  idTemplate: string,
+  configTemplateCard: IConfigTemplateCard
   handleImageClick: () => void,
   handleDeleteClick: TFuncHandleClick,
   userId: string,
@@ -33,16 +36,17 @@ export interface ICardConstructor {
 }
 
 class Card {
-  private readonly _name: string;
-  private readonly _link: URL;
+  private readonly _interceptionError: TInterceptionError;
+  private readonly _name: ICardInfo['name'];
+  private readonly _link: ICardInfo['link'];
   private _likes: ILikes[];
-  private readonly _id: string;
-  private readonly _userId: string;
-  private readonly _ownerId: string;
-  private readonly _idTemplate: string;
-  private readonly _handleImageClick: () => void;
-  private readonly _handleDeleteClick: TFuncHandleClick;
-  private readonly _handleLikeClick: TFuncHandleClick;
+  private readonly _id: ICardInfo['_id'];
+  private readonly _userId: ICardConstructor['userId'];
+  private readonly _ownerId: IDataUser['_id'];
+  private readonly _configTemplateCard: IConfigTemplateCard
+  private readonly _handleImageClick: ICardConstructor['handleImageClick'];
+  private readonly _handleDeleteClick: ICardConstructor['handleDeleteClick'];
+  private readonly _handleLikeClick: ICardConstructor['handleLikeClick'];
   private _element: HTMLTemplateElement | null = null;
   private _elementTitle: HTMLTitleElement | null = null;
   private _deleteButton: HTMLButtonElement | null = null;
@@ -52,36 +56,55 @@ class Card {
   private _elementCardTemplate: HTMLTemplateElement | null = null;
   private _elementCardElement: HTMLLIElement | null = null;
 
-  constructor({cardInfo, idTemplate, handleImageClick, handleDeleteClick, userId, handleLikeClick}
-                : ICardConstructor) {
+  constructor(
+    {
+      cardInfo, configTemplateCard, handleImageClick,
+      handleDeleteClick, userId, handleLikeClick
+    }: ICardConstructor) {
+
+    this._configTemplateCard = configTemplateCard
     this._name = cardInfo.name;
     this._link = cardInfo.link;
     this._likes = cardInfo.likes;
     this._id = cardInfo._id;
     this._userId = userId;
     this._ownerId = cardInfo.owner._id;
-    this._idTemplate = idTemplate;
     this._handleImageClick = handleImageClick;
     this._handleDeleteClick = handleDeleteClick;
     this._handleLikeClick = handleLikeClick;
+    this._interceptionError = interceptionError;
   };
 
-  public generateCard = (): HTMLTemplateElement => {
+  public generateCard = (): HTMLTemplateElement | never => {
+    const {
+      CLASS_TITLE_CARD_TEMPLATE,
+      CLASS_BUTTON_DELETE_CARD_TEMPLATE, CLASS_IMAGE_CARD_TEMPLATE,
+      CLASS_BUTTON_LIKE_CARD_TEMPLATE, CLASS_INFO_LIKE_CARD_TEMPLATE
+    } = this._configTemplateCard;
     this._element = this._getTemplate();
 
     if (this._element) {
-      this._elementTitle = this._element.querySelector('.elements__title');
+      this._elementTitle =
+        this._element.querySelector(`.${CLASS_TITLE_CARD_TEMPLATE}`);
 
       if (this._elementTitle) {
         this._elementTitle.textContent = this._name;
 
-      } else throw new Error('No element in template card "title".')
-    } else throw new Error('No element in template card.')
+      } else this._interceptionError(92, 'generateCard', 'Card.ts')
+    } else this._interceptionError(94, 'generateCard', 'Card.ts')
 
-    this._deleteButton = this._element.querySelector('.elements__delete');
-    this._elementImage = this._element.querySelector('.elements__mask-group');
-    this._likeButton = this._element.querySelector('.elements__group');
-    this._likeCountElement = this._element.querySelector('.elements__number-likes');
+    this._deleteButton =
+      this._element.querySelector(`.${CLASS_BUTTON_DELETE_CARD_TEMPLATE}`);
+
+    this._elementImage =
+      this._element.querySelector(`.${CLASS_IMAGE_CARD_TEMPLATE}`);
+
+    this._likeButton =
+      this._element.querySelector(`.${CLASS_BUTTON_LIKE_CARD_TEMPLATE}`);
+
+    this._likeCountElement =
+      this._element.querySelector(`.${CLASS_INFO_LIKE_CARD_TEMPLATE}`);
+
     this._setEventListeners();
     this.setLikes(this._likes);
 
@@ -96,11 +119,11 @@ class Card {
     return this._element;
   };
 
-  public deleteCard(this: Card): void {
+  public deleteCard(this: Card): void | never {
     if (this._element) {
       this._element.remove();
       this._element = null;
-    } else throw new Error('No element Card')
+    } else this._interceptionError(125, 'deleteCard', 'Card.ts')
   }
 
   public isLiked(this: Card): ILikes | undefined {
@@ -116,54 +139,62 @@ class Card {
     this.isLiked() ? this._fillLike() : this._removeLike()
   }
 
-  private _getTemplate = (): HTMLTemplateElement => {
+  private _getTemplate = (): HTMLTemplateElement | never => {
+    const {
+      ID_SECTION_CARD_TEMPLATE, CLASS_ELEMENT_CARD_TEMPLATE
+    } = this._configTemplateCard;
+
     this._elementCardTemplate =
-      document.querySelector(`#${this._idTemplate}`);
+      document.querySelector(`#${ID_SECTION_CARD_TEMPLATE}`);
 
     if (this._elementCardTemplate) {
       const elementCardTemplateContent = this._elementCardTemplate.content;
 
       if (elementCardTemplateContent) {
         this._elementCardElement =
-          elementCardTemplateContent.querySelector('.elements__element');
+          elementCardTemplateContent.querySelector(`.${CLASS_ELEMENT_CARD_TEMPLATE}`);
 
         if (this._elementCardElement) {
           return this._elementCardElement.cloneNode(true) as HTMLTemplateElement
-        } else throw new Error('No clone element card')
-      } else throw new Error('No elements in template card')
-    } else throw new Error('No template card')
+        } else this._interceptionError(161, '_getTemplate', 'Card.ts')
+      } else this._interceptionError(162, '_getTemplate', 'Card.ts')
+    } else this._interceptionError(163, '_getTemplate', 'Card.ts')
   };
 
-  private _setEventListeners(): void {
+  private _setEventListeners(): void | never {
     if (this._deleteButton) {
       this._deleteButton.addEventListener('click', () => {
         this._handleDeleteClick(this._id);
       });
-    } else throw new Error('No element delete button');
+    } else this._interceptionError(171, '_setEventListeners', 'Card.ts')
 
     if (this._likeButton) {
       this._likeButton.addEventListener('click', () => {
         this._handleLikeClick(this._id);
       });
-    } else throw new Error('No element like button');
+    } else this._interceptionError(177, '_setEventListeners', 'Card.ts')
 
     if (this._elementImage) {
       this._elementImage.addEventListener('click', () => {
         this._handleImageClick();
       });
-    } else throw new Error('No element image');
+    } else this._interceptionError(183, '_setEventListeners', 'Card.ts')
   };
 
-  private _fillLike(): void {
+  private _fillLike(): void | never {
+    const {CLASS_BUTTON_LIKE_CARD_TEMPLATE} = this._configTemplateCard;
+
     if (this._likeButton) {
-      this._likeButton.classList.add('elements__group_active');
-    } else throw  new Error('No element button like');
+      this._likeButton.classList.add(`${CLASS_BUTTON_LIKE_CARD_TEMPLATE}_active`);
+    } else this._interceptionError(191, '_fillLike', 'Card.ts')
   };
 
-  private _removeLike(): void {
+  private _removeLike(): void | never {
+    const {CLASS_BUTTON_LIKE_CARD_TEMPLATE} = this._configTemplateCard;
+
     if (this._likeButton) {
-      this._likeButton.classList.remove('elements__group_active');
-    } else throw new Error('No element button like');
+      this._likeButton.classList.remove(`${CLASS_BUTTON_LIKE_CARD_TEMPLATE}_active`);
+    } else this._interceptionError(199, '_removeLike', 'Card.ts')
   };
 }
 

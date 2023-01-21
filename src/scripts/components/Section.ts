@@ -1,5 +1,6 @@
 import {ICardInfo} from "./Card";
 import {IAddCard} from '../../pages/index';
+import {interceptionError, TInterceptionError} from "../utils/utils";
 
 interface IConstructorsSection {
   funcRenderer: (data: IAddCard) => void
@@ -12,17 +13,20 @@ export interface ISetItemArgs {
 }
 
 class Section {
+  protected readonly _interceptionError: TInterceptionError;
   private readonly _renderer: (data: IAddCard) => void;
   private readonly _containerOrNull: HTMLUListElement | null;
   private readonly _container!: HTMLUListElement;
 
   constructor({funcRenderer, containerClass}: IConstructorsSection) {
     this._renderer = funcRenderer;
-
+    this._interceptionError = interceptionError
     this._containerOrNull = document.querySelector(`.${containerClass}`);
     if (this._containerOrNull) {
       this._container = this._containerOrNull;
-    } else throw new Error('No container element')
+    } else {
+      this._interceptionError(28, 'constructor', 'Section.ts')
+    }
   };
 
   rendererItems(initialArray: ICardInfo[]): void {

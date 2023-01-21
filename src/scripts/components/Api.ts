@@ -22,21 +22,15 @@ const enum methods {
   PUT = 'PUT',
 }
 
-export interface IDefaultMessage {
-  message: string
+type FuncFetchIdVoid = {
+  (id: number): Promise<void>
+  (id: string): Promise<void>
 }
 
-type FuncFetchId = {
-  (id: number): Promise<Response>
-  (id: string): Promise<Response>
+type FuncFetchIdICardInfo = {
+  (id: number): Promise<ICardInfo>
+  (id: string): Promise<ICardInfo>
 }
-
-type FuncFetchAvatar = {
-  (id: string): Promise<Response>
-}
-
-type FuncFetchNameLink = (name: string, link: URL) => Promise<Response>
-type FuncFetchNameAbout = ({name, about}: { name: string, about: string }) => Promise<IDataUser>
 
 class Api {
   private readonly _baseUrl: IBasicConfApi['baseUrl'];
@@ -97,7 +91,7 @@ class Api {
       .then((res: Response) => this._checkResponse(res));
   }
 
-  public deleteCard = (id: string | number): Promise<void> => {
+  public deleteCard: FuncFetchIdVoid = (id) => {
     const input: URL = new URL(`${this._baseUrl}/cards/${id}`);
 
     const init: IConfApiFetch = {
@@ -109,7 +103,7 @@ class Api {
       .then((res: Response) => this._checkResponse(res));
   }
 
-  public addLike = (id: number | string): Promise<ICardInfo> => {
+  public addLike: FuncFetchIdICardInfo = (id) => {
     const input: URL = new URL(`${this._baseUrl}/cards/${id}/likes`);
 
     const init: IConfApiFetch = {
@@ -121,7 +115,7 @@ class Api {
       .then((res: Response) => this._checkResponse(res));
   }
 
-  public deleteLike = (id: number | string): Promise<ICardInfo> => {
+  public deleteLike: FuncFetchIdICardInfo = (id) => {
     const input: URL = new URL(`${this._baseUrl}/cards/${id}/likes`);
 
     const init: IConfApiFetch = {
@@ -149,7 +143,7 @@ class Api {
   private _checkResponse<T>(res: Response): Promise<T> {
     return res.ok
       ? res.json()
-      : res.json().then((res: { message: string }) => Promise.reject(res.message))
+      : res.json().then((err) => Promise.reject(err))
   }
 }
 

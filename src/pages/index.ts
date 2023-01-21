@@ -14,10 +14,10 @@ import {
   CLASS_ELEMENT_BUTTON_OPEN_POPUP_EDIT_PROFILE,
   CLASS_ELEMENT_FORM_ADD_CARD,
   CLASS_ELEMENT_FORM_EDIT_AVATAR,
-  CLASS_ELEMENT_FORM_EDIT_PROFILE,
-  ID_SECTION_CARD_TEMPLATE
+  CLASS_ELEMENT_FORM_EDIT_PROFILE
 } from "../scripts/utils/constants";
 import {IConstructorPopupFull} from "../scripts/components/Popup";
+import configTemplateCard from "../scripts/utils/configTemplateCard";
 
 export const api = new Api({
   baseUrl: new URL('https://mesto.nomoreparties.co/v1/cohort-39'),
@@ -166,7 +166,7 @@ function addCard({cardInfo, isCreatedSubmit}: IAddCard) {
 function createCard(cardInfo: ICardInfo): HTMLTemplateElement {
   const card = new Card({
       cardInfo: cardInfo,
-      idTemplate: ID_SECTION_CARD_TEMPLATE,
+      configTemplateCard: configTemplateCard,
       handleImageClick: (): void => {
         popupWithImage.open(cardInfo);
       },
@@ -227,8 +227,10 @@ Promise.all([api.getCurrentUserInfo(), api.getCards()])
 
 function outputError(err: unknown): void {
   if (err instanceof Error) {
-    console.log(err.message);
-  } else console.log(err)
+    console.error(`${err.name}: ${err.message}`);
+  } else if (typeof err === 'object' && err && "message" in err) {
+    console.error('Error: ', err.message)
+  } else console.error(err)
 }
 
 if (profileOpenPopupButtonEdit) {

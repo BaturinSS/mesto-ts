@@ -1,9 +1,5 @@
 import {type IConfigValidation} from "../utils/configValidation";
-import {
-  MESSAGE_ERROR_NOT_ELEMENT_BUTTON_SUBMIT,
-  MESSAGE_ERROR_NOT_ELEMENT_FORM_POPUP,
-  MESSAGE_ERROR_NOT_ELEMENT_INPUT_ERROR
-} from "../utils/constants";
+import {interceptionError, type TInterceptionError} from "../utils/utils";
 
 interface IConstructor {
   formData: IConfigValidation,
@@ -11,6 +7,8 @@ interface IConstructor {
 }
 
 class FormValidator {
+  private readonly _interceptionError: TInterceptionError;
+
   private readonly _formActivePopupOrNull: HTMLFormElement | null;
   private readonly _formActivePopup: HTMLFormElement;
 
@@ -26,22 +24,33 @@ class FormValidator {
   private readonly _arrayInputsFormActive: HTMLInputElement[];
 
   constructor({formData, classPopup}: IConstructor) {
-    this._inactiveButtonClass = formData.inactiveButtonClass;
-    this._inputErrorClass = formData.inputErrorClass;
-    this._textErrorClass = formData.textErrorClass;
+    const {
+      CLASS_INACTIVE_BUTTON, CLASS_INPUT_ERROR,
+      CLASS_INPUT_ERROR_ACTIVE,
+      CLASS_SUBMIT_BUTTON, CLASS_INPUT
+    } = formData;
+    this._interceptionError = interceptionError;
+
+    this._inactiveButtonClass = CLASS_INACTIVE_BUTTON;
+    this._inputErrorClass = CLASS_INPUT_ERROR;
+    this._textErrorClass = CLASS_INPUT_ERROR_ACTIVE;
 
     this._formActivePopupOrNull = document.querySelector(`.${classPopup}`);
     if (this._formActivePopupOrNull) {
       this._formActivePopup = this._formActivePopupOrNull
-    } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_FORM_POPUP)
+    } else {
+      this._interceptionError(45, 'constructor', 'FormValidator.ts')
+    }
 
-    this._submitButtonOrNull = this._formActivePopup.querySelector(`.${formData.submitButtonClass}`);
+    this._submitButtonOrNull = this._formActivePopup.querySelector(`.${CLASS_SUBMIT_BUTTON}`);
     if (this._submitButtonOrNull) {
       this._submitButton = this._submitButtonOrNull
-    } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_BUTTON_SUBMIT)
+    } else {
+      this._interceptionError(47, 'constructor', 'FormValidator.ts')
+    }
 
     this._arrayInputsFormActive =
-      Array.from(this._formActivePopup.querySelectorAll(`.${formData.inputClass}`));
+      Array.from(this._formActivePopup.querySelectorAll(`.${CLASS_INPUT}`));
   }
 
 
@@ -83,22 +92,26 @@ class FormValidator {
     }
   }
 
-  private _disableErrorText(inputElement: HTMLInputElement): void {
+  private _disableErrorText(inputElement: HTMLInputElement): void | never {
     this._inputErrorOrNull = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
     if (this._inputErrorOrNull) {
       this._inputError = this._inputErrorOrNull;
       this._inputError.classList.remove(this._textErrorClass);
-    } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_INPUT_ERROR)
+    } else {
+      this._interceptionError(97, '_disableErrorText', 'FormValidator.ts')
+    }
   }
 
-  private _includeErrorText(inputElement: HTMLInputElement): void {
+  private _includeErrorText(inputElement: HTMLInputElement): void | never {
     this._inputErrorOrNull = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
     if (this._inputErrorOrNull) {
       this._inputError = this._inputErrorOrNull;
       this._inputError.textContent = '';
       this._inputError.classList.add(this._textErrorClass);
       this._inputError.textContent = inputElement.validationMessage;
-    } else throw new Error(MESSAGE_ERROR_NOT_ELEMENT_INPUT_ERROR)
+    } else {
+      this._interceptionError(107, '_includeErrorText', 'FormValidator.ts')
+    }
   }
 
   private _isValid(inputElement: HTMLInputElement): void {

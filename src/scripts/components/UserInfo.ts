@@ -1,4 +1,5 @@
 import {IDataUser} from "./Card";
+import {interceptionError, TInterceptionError} from "../utils/utils";
 
 interface IConstructorUserInfo {
   classProfileName: string,
@@ -7,11 +8,12 @@ interface IConstructorUserInfo {
 }
 
 export interface IGetUserInfo {
-  name: IDataUser['name'],
-  about: IDataUser['about']
+  [key: string]: string
 }
 
 class UserInfo {
+  protected readonly _interceptionError: TInterceptionError;
+
   private readonly _nameElement: HTMLHeadingElement;
   private readonly _nameElementOrNull: HTMLHeadingElement | null;
 
@@ -25,22 +27,27 @@ class UserInfo {
   private _name!: IGetUserInfo['name'] | null;
 
   constructor({classProfileName, classProfileAbout, classProfileAvatar}: IConstructorUserInfo) {
+    this._interceptionError = interceptionError
     this._nameElementOrNull = document.querySelector(`.${classProfileName}`);
     if (this._nameElementOrNull) {
       this._nameElement = this._nameElementOrNull;
-    } else throw new Error('No name element in profile')
+    } else {
+      this._interceptionError(31, 'constructor', 'UserInfo.ts')
+    }
 
     this._aboutElementOrNull = document.querySelector(`.${classProfileAbout}`);
     if (this._aboutElementOrNull) {
       this._aboutElement = this._aboutElementOrNull;
-    } else throw new Error('No about element in profile')
+    } else {
+      this._interceptionError(38, 'constructor', 'UserInfo.ts')
+    }
 
     this._avatarElementOrNull = document.querySelector(`.${classProfileAvatar}`);
     if (this._avatarElementOrNull) {
       this._avatarElement = this._avatarElementOrNull;
-    } else throw new Error('No about element in profile')
-
-
+    } else {
+      this._interceptionError(45, 'constructor', 'UserInfo.ts')
+    }
   };
 
   getUserInfo(): IGetUserInfo {
