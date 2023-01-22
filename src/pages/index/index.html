@@ -13,7 +13,7 @@
 <body class="body">
 <div class="root">
   <header class="header">
-    <img alt="логотип" class="header__logo" src="<%=require('./images/header__logo.svg')%>">
+    <img alt="логотип" class="header__logo" src="<%=require('../../images/header__logo.svg')%>">
   </header>
   <main class="content">
     <section class="profile">
@@ -39,7 +39,7 @@
   <div class="popup popup_type_profile-edit">
     <div class="popup__container">
       <button class="popup__close" type="button">
-        <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+        <img alt="иконка" class="popup__image-cross" src="<%=require('../../images/image-cross.svg')%>">
       </button>
       <h3 class="popup__title">Редактировать профиль</h3>
       <form action="#" class="popup__form popup__form_type_profile-edit" method="get" name="editProfile" novalidate>
@@ -56,7 +56,7 @@
   <div class="popup popup_type_card-add">
     <div class="popup__container">
       <button class="popup__close" type="button">
-        <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+        <img alt="иконка" class="popup__image-cross" src="<%=require('../../images/image-cross.svg')%>">
       </button>
       <h3 class="popup__title">Новое место</h3>
       <form action="#" class="popup__form popup__form_type_card-add" method="get" name="addCard" novalidate>
@@ -74,7 +74,7 @@
 <div class="popup popup_type_delete-confirm">
   <div class="popup__container">
     <button class="popup__close" type="button">
-      <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+      <img alt="иконка" class="popup__image-cross" src="<%=require('../../images/image-cross.svg')%>">
     </button>
     <h3 class="popup__title popup__title_delete-confirm">Вы уверены?</h3>
     <button class="popup__save-button popup__save-button_delete-confirm" type="submit">Да</button>
@@ -83,7 +83,7 @@
 <div class="popup popup_type_avatar-edit">
   <div class="popup__container">
     <button class="popup__close" type="button">
-      <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+      <img alt="иконка" class="popup__image-cross" src="<%=require('../../images/image-cross.svg')%>">
     </button>
     <h3 class="popup__title">Обновить аватар</h3>
     <form action="#" class="popup__form popup__form_type_avatar-edit" method="get" name="addAvatar" novalidate>
@@ -97,7 +97,7 @@
 <div class="popup popup_type_image-zoom">
   <div class="popup__box">
     <button class="popup__close" type="button">
-      <img alt="иконка" class="popup__image-cross" src="<%=require('./images/image-cross.svg')%>">
+      <img alt="иконка" class="popup__image-cross" src="<%=require('../../images/image-cross.svg')%>">
     </button>
     <img alt="фотография" class="popup__image" src="#">
     <h2 class="popup__subtitle"></h2>
@@ -106,7 +106,7 @@
 <template id="elements-template">
   <li class="elements__element">
     <button class="elements__delete" type="button">
-      <img alt="иконка" class="elements__image-delete" src="<%=require('./images/delete.svg')%>">
+      <img alt="иконка" class="elements__image-delete" src="<%=require('../../images/delete.svg')%>">
     </button>
     <figure class="elements__rectangle">
       <img alt="фотография" class="elements__mask-group" src="#">

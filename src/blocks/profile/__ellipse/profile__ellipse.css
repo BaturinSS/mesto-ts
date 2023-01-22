@@ -1,8 +1,7 @@
 .profile__ellipse {
   width: 120px;
   height: 120px;
-  margin: 0;
-  margin-right: 27.2px;
+  margin: 0 27px 0 0;
   padding: 0;
   border-radius: 100%;
   position: relative;
@@ -21,8 +20,7 @@
   left: -1px;
   right: -1px;
   bottom: -1px;
-  background: no-repeat rgba(0, 0, 0, 0.8) url(../../../images/pen_edit_avatar.svg);
-  background-position: center center;
+  background: rgba(0, 0, 0, 0.8) url(../../../images/pen_edit_avatar.svg) no-repeat center center;
   background-size: 26px;
   text-decoration: none;
   opacity: 0;

@@ -8,8 +8,7 @@
   vertical-align: bottom;
   overflow: hidden;
   text-align: center;
-  background: no-repeat rgba(216, 212, 212, 0.574) url(../../../images/noimage.png);
-  background-position: center center;
+  background: rgba(216, 212, 212, 0.574) url(../../../images/noimage.png) no-repeat center center;
   background-size: 150px;
   /*border: 1px solid red;*/
 }

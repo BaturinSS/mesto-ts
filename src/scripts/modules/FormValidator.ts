@@ -1,9 +1,9 @@
-import {type IConfigValidation} from "../utils/configValidation";
-import {interceptionError, type TInterceptionError} from "../utils/utils";
+import { type IConfigValidation } from "../configs/configValidation";
+import { interceptionError, type TInterceptionError } from "../utils/utils";
 
 interface IConstructor {
-  formData: IConfigValidation,
-  classPopup: string,
+  formData: IConfigValidation;
+  classPopup: string;
 }
 
 class FormValidator {
@@ -23,11 +23,13 @@ class FormValidator {
   private readonly _textErrorClass: string;
   private readonly _arrayInputsFormActive: HTMLInputElement[];
 
-  constructor({formData, classPopup}: IConstructor) {
+  constructor({ formData, classPopup }: IConstructor) {
     const {
-      CLASS_INACTIVE_BUTTON, CLASS_INPUT_ERROR,
+      CLASS_INACTIVE_BUTTON,
+      CLASS_INPUT_ERROR,
       CLASS_INPUT_ERROR_ACTIVE,
-      CLASS_SUBMIT_BUTTON, CLASS_INPUT
+      CLASS_SUBMIT_BUTTON,
+      CLASS_INPUT,
     } = formData;
     this._interceptionError = interceptionError;
 
@@ -37,22 +39,24 @@ class FormValidator {
 
     this._formActivePopupOrNull = document.querySelector(`.${classPopup}`);
     if (this._formActivePopupOrNull) {
-      this._formActivePopup = this._formActivePopupOrNull
+      this._formActivePopup = this._formActivePopupOrNull;
     } else {
-      this._interceptionError(45, 'constructor', 'FormValidator.ts')
+      this._interceptionError(45, "constructor", "FormValidator.ts");
     }
 
-    this._submitButtonOrNull = this._formActivePopup.querySelector(`.${CLASS_SUBMIT_BUTTON}`);
+    this._submitButtonOrNull = this._formActivePopup.querySelector(
+      `.${CLASS_SUBMIT_BUTTON}`
+    );
     if (this._submitButtonOrNull) {
-      this._submitButton = this._submitButtonOrNull
+      this._submitButton = this._submitButtonOrNull;
     } else {
-      this._interceptionError(47, 'constructor', 'FormValidator.ts')
+      this._interceptionError(47, "constructor", "FormValidator.ts");
     }
 
-    this._arrayInputsFormActive =
-      Array.from(this._formActivePopup.querySelectorAll(`.${CLASS_INPUT}`));
+    this._arrayInputsFormActive = Array.from(
+      this._formActivePopup.querySelectorAll(`.${CLASS_INPUT}`)
+    );
   }
-
 
   public clearErrorsForm(): void {
     this._arrayInputsFormActive.forEach((inputElement) => {
@@ -69,12 +73,12 @@ class FormValidator {
   }
 
   private _deactivateButton(): void {
-    this._submitButton.setAttribute('disabled', 'true');
+    this._submitButton.setAttribute("disabled", "true");
     this._submitButton.classList.add(this._inactiveButtonClass);
   }
 
   private _activationButton(): void {
-    this._submitButton.removeAttribute('disabled');
+    this._submitButton.removeAttribute("disabled");
     this._submitButton.classList.remove(this._inactiveButtonClass);
   }
 
@@ -93,24 +97,28 @@ class FormValidator {
   }
 
   private _disableErrorText(inputElement: HTMLInputElement): void | never {
-    this._inputErrorOrNull = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
+    this._inputErrorOrNull = this._formActivePopup.querySelector(
+      `.${inputElement.id}-error`
+    );
     if (this._inputErrorOrNull) {
       this._inputError = this._inputErrorOrNull;
       this._inputError.classList.remove(this._textErrorClass);
     } else {
-      this._interceptionError(97, '_disableErrorText', 'FormValidator.ts')
+      this._interceptionError(97, "_disableErrorText", "FormValidator.ts");
     }
   }
 
   private _includeErrorText(inputElement: HTMLInputElement): void | never {
-    this._inputErrorOrNull = this._formActivePopup.querySelector(`.${inputElement.id}-error`);
+    this._inputErrorOrNull = this._formActivePopup.querySelector(
+      `.${inputElement.id}-error`
+    );
     if (this._inputErrorOrNull) {
       this._inputError = this._inputErrorOrNull;
-      this._inputError.textContent = '';
+      this._inputError.textContent = "";
       this._inputError.classList.add(this._textErrorClass);
       this._inputError.textContent = inputElement.validationMessage;
     } else {
-      this._interceptionError(107, '_includeErrorText', 'FormValidator.ts')
+      this._interceptionError(107, "_includeErrorText", "FormValidator.ts");
     }
   }
 
@@ -127,11 +135,11 @@ class FormValidator {
   }
 
   private _setEventListeners(inputElement: HTMLInputElement): void {
-    this._formActivePopup.addEventListener('submit', (evt) => {
+    this._formActivePopup.addEventListener("submit", (evt) => {
       evt.preventDefault();
     });
 
-    inputElement.addEventListener('input', () => {
+    inputElement.addEventListener("input", () => {
       this._isValid(inputElement);
     });
   }

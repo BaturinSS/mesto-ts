@@ -5,9 +5,8 @@
   align-items: center;
   flex-wrap: wrap;
   padding: 0;
-  margin: auto;
   gap: 34px 0;
-  margin-top: 40px;
+  margin: 40px auto auto;
   /*border: 1px solid red;*/
 }
 
