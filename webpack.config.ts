@@ -1,12 +1,9 @@
-const path = require("path");
+import * as path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
-module.exports = {
+const webpackConfig = {
   entry: { main: "./src/index.ts" },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -34,7 +31,7 @@ module.exports = {
       },
       {
         test: /\.ts$/,
-        use: "babel-loader",
+        use: ["babel-loader", "ts-loader"],
         exclude: /node_modules/,
       },
       {
@@ -47,16 +44,24 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
-            options: { importLoaders: 1 },
+            options: {
+              importLoaders: 1,
+              sourceMap: true,
+            },
           },
           {
             loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                config: true,
+              },
+              sourceMap: true,
+            },
           },
         ],
       },
     ],
   },
-
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/pages/index/index.html",
@@ -65,3 +70,5 @@ module.exports = {
     new MiniCssExtractPlugin(),
   ],
 };
+
+export default webpackConfig;

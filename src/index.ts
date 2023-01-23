@@ -20,6 +20,11 @@ import { IConstructorPopupFull } from "./scripts/modules/Popup";
 import configCardTemplate from "./scripts/configs/configCardTemplate";
 import configCard from "./scripts/configs/configCard";
 
+export interface IAddCard {
+  cardInfo: ICardInfo;
+  isCreatedSubmit: boolean;
+}
+
 export const api = new Api({
   baseUrl: new URL("https://mesto.nomoreparties.co/v1/cohort-39"),
   headers: {
@@ -143,11 +148,6 @@ function deleteLastCard() {
   }
 }
 
-export interface IAddCard {
-  cardInfo: ICardInfo;
-  isCreatedSubmit: boolean;
-}
-
 function addCard({ cardInfo, isCreatedSubmit }: IAddCard) {
   section.setItem({
     element: createCard(cardInfo),
@@ -257,3 +257,6 @@ popupAddImage.setEventListeners();
 popupEditProfile.setEventListeners();
 popupDeleteCard.setEventListeners();
 popupEditAvatar.setEventListeners();
+
+const TEST_FN = () => console.log("test");
+TEST_FN();

@@ -10,9 +10,9 @@ export interface IDataUser {
   _id: string;
 }
 
-interface ILikes extends IDataUser {}
+export interface ILikes extends IDataUser {}
 
-interface IOwner extends IDataUser {}
+export interface IOwner extends IDataUser {}
 
 export type TFuncHandleClick = (id: string) => void;
 
