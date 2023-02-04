@@ -9,18 +9,19 @@ const webpackConfig = {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].[contenthash].js",
     publicPath: "",
+    clean: true,
   },
   optimization: {
     splitChunks: {
       cacheGroups: {
         vendor: {
-          name: 'vendor',
+          name: "vendor",
           test: /node_modules/,
-          chunks: 'all',
-          enforce: true
-        }
-      }
-    }
+          chunks: "all",
+          enforce: true,
+        },
+      },
+    },
   },
   mode: "development",
   devServer: {
@@ -79,7 +80,7 @@ const webpackConfig = {
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css"
+      filename: "[name].[contenthash].css",
     }),
   ],
 };
