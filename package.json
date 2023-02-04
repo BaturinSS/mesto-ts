@@ -2,6 +2,7 @@
   "name": "mesto-ts",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "_babel.config.js",
   "scripts": {
     "build": "webpack --mode production",
