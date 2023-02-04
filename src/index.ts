@@ -257,6 +257,3 @@ popupAddImage.setEventListeners();
 popupEditProfile.setEventListeners();
 popupDeleteCard.setEventListeners();
 popupEditAvatar.setEventListeners();
-
-const TEST_FN = () => console.log("test");
-TEST_FN();

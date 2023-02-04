@@ -7,10 +7,21 @@ const webpackConfig = {
   entry: { main: "./src/index.ts" },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "main.js",
+    filename: "[name].[contenthash].js",
     publicPath: "",
   },
-
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          name: 'vendor',
+          test: /node_modules/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
+  },
   mode: "development",
   devServer: {
     static: path.resolve(__dirname, "./dist"),
@@ -67,7 +78,9 @@ const webpackConfig = {
       template: "./src/pages/index/index.html",
     }),
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash].css"
+    }),
   ],
 };
 
