@@ -44,7 +44,7 @@ const webpackConfig = {
       {
         test: /\.ts$/,
         use: ["babel-loader", "ts-loader"],
-        exclude: /node_modules/,
+        exclude: "/node_modules/",
       },
       {
         test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf|mp4)$/,

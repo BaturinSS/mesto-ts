@@ -4,7 +4,7 @@
     [
       "@babel/preset-env",
       {
-        "modules": false,
+        "modules": "commonjs",
         "useBuiltIns": "usage",
         "corejs": "3.27.2"
       }
